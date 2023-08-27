@@ -1,0 +1,143 @@
+# With MDX
+
+If you are using [MDX](https://mdxjs.com/) and want to integrate React Code Block with the code blocks defined in `.mdx` files, you can follow this guide. This is a common
+practice if you are building a blogging / documentation website over another React framework like Next.js, Remix, or Gatsby.
+
+import { Steps } from 'nextra/components';
+
+## Basic setup
+
+<Steps>
+
+### Installation
+
+Start by installing `react-code-block` and its peer-dependency `prism-react-renderer` via npm:
+
+```bash hideLineNumbers
+npm i react-code-block prism-react-renderer
+```
+
+### Configure your `MDXProvider`
+
+In the `MDXProvider` component you are using to render the parsed markdown data, add a new entry under `components` prop for `pre` tags.
+
+```jsx lines={[7]}
+function MyBlogLayout({ children }) {
+  return (
+    // ...
+    <MDXProvider
+      components={{
+        // ...
+        pre: MyCodeBlock,
+      }}
+    >
+      {children}
+    </MDXProvider>
+    // ...
+  );
+}
+```
+
+### Define your CodeBlock component
+
+In the previous step, we defined all `pre` tags to render through `MyCodeBlock` component. Now we can build this component using the primitives exposed via React Code Block.
+
+```jsx
+import { CodeBlock } from 'react-code-block';
+
+function MyCodeBlock({ children, className }) {
+  return (
+    <CodeBlock code={children} language="js">
+      <CodeBlock.Code className="bg-gray-900 p-6 rounded-xl shadow-lg">
+        <CodeBlock.LineContent>
+          <CodeBlock.Token />
+        </CodeBlock.LineContent>
+      </CodeBlock.Code>
+    </CodeBlock>
+  );
+}
+```
+
+You can customize this component however you like with features such as line numbers, line highlighting, etc. as documented [here](../usage#showing-line-numbers).
+
+### See it in action!
+
+In an MDX file, try writing a code snippet and see the changes.
+
+````mdx filename="index.mdx"
+```js
+function sayHello(name) {
+  console.log('Hello', name);
+}
+```
+````
+
+</Steps>
+
+## Advanced setup
+
+If you have setup [line and word highlighting](../usage#line-highlighting), you may want to expose these as props in the `mdx` files. This guide goes over setting this up
+using the [`rehype-mdx-code-props`](https://github.com/remcohaszing/rehype-mdx-code-props) plugin.
+
+<Steps>
+
+### Install `rehype-mdx-code-props`
+
+```bash hideLineNumbers
+npm i rehype-mdx-code-props
+```
+
+### Add the plugin to your MDX compiler setup
+
+This is specific to the framework you are using / setup you have for compiling MDX.
+
+- Next.js: https://nextjs.org/docs/pages/building-your-application/configuring/mdx#remark-and-rehype-plugins
+- Gatsby: https://www.gatsbyjs.com/plugins/gatsby-plugin-mdx/#mdxoptions
+
+### Expose the props from your CodeBlock component
+
+Now you can expose all the props you want from your CodeBlock component that you can pass from mdx files.
+
+```jsx lines={['6:8']} words={['/lines/11', '/words/11', '/showLineNumbers/14']}
+import { CodeBlock } from 'react-code-block';
+
+function MyCodeBlock({
+  children,
+  className,
+  lines = [],
+  words = [],
+  showLineNumbers = false,
+}) {
+  return (
+    <CodeBlock code={children} language="js" lines={lines} words={words}>
+      <CodeBlock.Code className="bg-gray-900 p-6 rounded-xl shadow-lg">
+        <div className="table-row">
+          {showLineNumbers && (
+            <CodeBlock.LineNumber className="table-cell pr-4 text-sm text-gray-500 text-right select-none" />
+          )}
+          <CodeBlock.LineContent className="table-cell">
+            <CodeBlock.Token />
+          </CodeBlock.LineContent>
+        </div>
+      </CodeBlock.Code>
+    </CodeBlock>
+  );
+}
+```
+
+### Start using the props from your `mdx` files!
+
+You can now pass the props in your code blocks which will get passed down to the `MyCodeBlock` component!
+
+````mdx filename="index.mdx"
+```js lines={[2]} showLineNumbers
+function sayHello(name) {
+  console.log('Hello', name);
+}
+```
+````
+
+Note: To see [line highlighting](../usage#line-highlighting) and [word highlighting](../usage#line-highlighting) work correctly, you need to add additional styles for
+these states through the render props exposed by `CodeBlock.Code` and `CodeBlock.Token` components respectively.
+
+</Steps>
