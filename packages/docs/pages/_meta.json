@@ -1,0 +1,21 @@
+{
+  "index": {
+    "title": "Introduction",
+    "theme": {
+      "breadcrumb": false
+    }
+  },
+  "usage": "Usage",
+  "api-reference": {
+    "title": "API reference",
+    "theme": {
+      "breadcrumb": false
+    }
+  },
+  "examples": {
+    "title": "Examples",
+    "theme": {
+      "breadcrumb": false
+    }
+  }
+}
