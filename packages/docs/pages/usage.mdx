@@ -1,0 +1,307 @@
+import { CodeBlock } from 'react-code-block';
+import { js } from '../examples/placeholder-code';
+
+# Usage
+
+## Installation
+
+Start by installing `react-code-block` and its peer-dependency `prism-react-renderer` via npm:
+
+```bash hideLineNumbers
+npm i react-code-block prism-react-renderer
+```
+
+## Basic example
+
+React Code Block exposes all the un-styled primitives you need to build a code block component through its `CodeBlock` component and various other subcomponents attached to it.
+
+```jsx
+import { CodeBlock } from 'react-code-block';
+
+function CodeBlockDemo() {
+  return (
+    <CodeBlock code="console.log('Hello World!')" language="js">
+      <CodeBlock.Code className="bg-black">
+        <CodeBlock.LineContent>
+          <CodeBlock.Token />
+        </CodeBlock.LineContent>
+      </CodeBlock.Code>
+    </CodeBlock>
+  );
+}
+```
+
+<Preview>
+  <CodeBlock code="console.log('Hello World!')" language="js">
+    <CodeBlock.Code className="bg-black">
+      <CodeBlock.LineContent>
+        <CodeBlock.Token />
+      </CodeBlock.LineContent>
+    </CodeBlock.Code>
+  </CodeBlock>
+</Preview>
+
+Doesn't look very exciting _just yet_. Because these components are un-styled, **you have to add the styles** to make your code block look the way you want it to be. With a little bit
+of CSS(using TailwindCSS in the examples), we can completely change the way the code block looks like.
+
+```jsx
+import { CodeBlock } from 'react-code-block';
+
+function CodeBlockDemo({ code, language }) {
+  return (
+    <CodeBlock code={code} language={language}>
+      <CodeBlock.Code className="bg-gray-900 p-6 rounded-xl shadow-lg">
+        <CodeBlock.LineContent>
+          <CodeBlock.Token />
+        </CodeBlock.LineContent>
+      </CodeBlock.Code>
+    </CodeBlock>
+  );
+}
+
+const code = `
+async function sayHello(name) {
+  console.log('Hello', name);
+}
+`;
+
+<CodeBlockDemo code={code} />;
+```
+
+<Preview>
+  <CodeBlock
+    code={`
+async function sayHello(name) {
+  console.log('Hello', name);
+}
+    `}
+    language="js"
+  >
+    <CodeBlock.Code className="bg-gray-900 !p-6 rounded-xl shadow-lg">
+      <CodeBlock.LineContent>
+        <CodeBlock.Token />
+      </CodeBlock.LineContent>
+    </CodeBlock.Code>
+  </CodeBlock>
+</Preview>
+
+## Showing line numbers
+
+To render line numbers for each line in the code block, you can use the `CodeBlock.LineNumber` component. A common approach is to render the line numbers on the left column.
+To keep line numbers and the code aligned correctly, you can use CSS Grids or Table layout.
+
+```jsx lines={[8]} words={["table-cell", "table-row"]}
+import { CodeBlock } from 'react-code-block';
+
+function CodeBlockDemo({ code, language }) {
+  return (
+    <CodeBlock code={code} language={language}>
+      <CodeBlock.Code className="bg-gray-900 p-6 rounded-xl shadow-lg">
+        <div className="table-row">
+          <CodeBlock.LineNumber className="table-cell pr-4 text-sm text-gray-500 text-right select-none" />
+          <CodeBlock.LineContent className="table-cell">
+            <CodeBlock.Token />
+          </CodeBlock.LineContent>
+        </div>
+      </CodeBlock.Code>
+    </CodeBlock>
+  );
+}
+```
+
+<Preview>
+  <CodeBlock code={js} language="js">
+    <CodeBlock.Code className="bg-gray-900 !p-6 rounded-xl shadow-lg">
+      <div className="table-row">
+        <CodeBlock.LineNumber className="table-cell pr-4 text-sm text-gray-500 text-right select-none" />
+        <CodeBlock.LineContent className="table-cell">
+          <CodeBlock.Token />
+        </CodeBlock.LineContent>
+      </div>
+    </CodeBlock.Code>
+  </CodeBlock>
+</Preview>
+
+## Line highlighting
+
+You can highlight specific lines or line-ranges in your code via the `lines` prop on `CodeBlock` component. State information of **which line should be highlighted is
+made available through `isLineHighlighted` render prop** on `CodeBlock.Code` component, so you can add styles for how a line should be highlighted.
+
+```jsx words={["lines", "isLineHighlighted"]}
+import { CodeBlock } from 'react-code-block';
+
+function CodeBlockDemo({ code, language }) {
+  return (
+    <CodeBlock code={code} language={language} lines={['4:6', 8]}>
+      <CodeBlock.Code className="bg-gray-900 py-6 rounded-xl shadow-lg">
+        {({ isLineHighlighted }) => (
+          <div
+            className={`table-row ${
+              isLineHighlighted ? 'bg-violet-500/30' : 'opacity-60'
+            }`}
+          >
+            <CodeBlock.LineNumber
+              className={`table-cell pl-6 pr-4 text-sm text-right select-none ${
+                isLineHighlighted ? 'text-gray-300' : 'text-gray-500'
+              }`}
+            />
+            <CodeBlock.LineContent className="table-cell w-full pr-6">
+              <CodeBlock.Token />
+            </CodeBlock.LineContent>
+          </div>
+        )}
+      </CodeBlock.Code>
+    </CodeBlock>
+  );
+}
+```
+
+<Preview>
+  <CodeBlock code={js} lines={['4:6', 8]} language="js">
+    <CodeBlock.Code className="bg-gray-900 py-6 !px-0 rounded-xl shadow-lg">
+      {({ isLineHighlighted }) => (
+        <div
+          className={`table-row ${
+            isLineHighlighted ? 'bg-violet-500/30' : 'opacity-60'
+          }`}
+        >
+          <CodeBlock.LineNumber
+            className={`table-cell pl-6 pr-4 text-sm text-right select-none ${
+              isLineHighlighted ? 'text-gray-300' : 'text-gray-500'
+            }`}
+          />
+          <CodeBlock.LineContent className="table-cell w-full pr-6">
+            <CodeBlock.Token />
+          </CodeBlock.LineContent>
+        </div>
+      )}
+    </CodeBlock.Code>
+  </CodeBlock>
+</Preview>
+
+## Word highlighting
+
+Specific words can be highlighted within a code block using `words` prop on the `CodeBlock` component. State information of **which word to highlight is made available
+through `isTokenHighlighted` render prop** on `CodeBlock.Token` component. This can be used to style the highlighted words accordingly.
+
+```jsx words={["words", "isTokenHighlighted"]}
+import { CodeBlock } from 'react-code-block';
+
+function CodeBlockDemo({ code, language }) {
+  return (
+    <CodeBlock code={code} language={language} words={['/greet/4:8', 'target']}}>
+      <CodeBlock.Code className="bg-gray-900 p-6 rounded-xl shadow-lg">
+        <CodeBlock.LineContent>
+          <CodeBlock.Token>
+            {({ isTokenHighlighted, children }) => (
+              <span
+                className={
+                  isTokenHighlighted
+                    ? 'bg-violet-500/20 rounded-md px-1 py-0.5'
+                    : ''
+                }
+              >
+                {children}
+              </span>
+            )}
+          </CodeBlock.Token>
+        </CodeBlock.LineContent>
+      </CodeBlock.Code>
+    </CodeBlock>
+  );
+}
+```
+
+<Preview>
+  <CodeBlock code={js} words={['/greet/4:8', 'target']} language="js">
+    <CodeBlock.Code className="bg-gray-900 !p-6 rounded-xl shadow-lg">
+      <CodeBlock.LineContent>
+        <CodeBlock.Token>
+          {({ isTokenHighlighted, children }) => (
+            <span
+              className={
+                isTokenHighlighted ? 'bg-violet-500/30 rounded-md p-1' : ''
+              }
+            >
+              {children}
+            </span>
+          )}
+        </CodeBlock.Token>
+      </CodeBlock.LineContent>
+    </CodeBlock.Code>
+  </CodeBlock>
+</Preview>
+
+## Copy code to clipboard button
+
+There is no built-in way to show a "Copy code" button in the code block. This is because both the styling and functionality depends on your project and the APIs / libraries
+you are using to copy data to user's clipboard. Therefore, you have to implement this feature on your own. An example of how it could look like:
+
+```jsx words={['copyCode', 'useCopyToClipboard', 'copyToClipboard']} lines={['24:29']} file=../examples/CopyCodeToClipboard.tsx
+
+```
+
+import CopyCodeToClipboard from '../examples/CopyCodeToClipboard';
+
+<Preview>
+  <CopyCodeToClipboard code={js} language="js" />
+</Preview>
+
+## Rendering additional elements
+
+Since all the `CodeBlock` components are composable in nature, you have complete freedom to render additional elements in your code blocks. This could be showing the
+filename, language used, captions, etc.
+
+```jsx lines={["7:8", "17:24", "33:36"]} file=../examples/RenderAdditionalElements.tsx
+
+```
+
+import RenderAdditionalElements from '../examples/RenderAdditionalElements';
+
+<Preview>
+  <RenderAdditionalElements code={js} language="js" filename="hello.js" />
+</Preview>
+
+## Theming
+
+React Code Block uses `prism-react-renderer` under the hood for syntax highlighting. Default theme is `vsDark` and it can be changes using the `theme` prop in the
+`CodeBlock` component. Follow [this guide](https://github.com/FormidableLabs/prism-react-renderer#theming) by `prism-react-renderer` for custom themes.
+
+```jsx lines={[2,6]}
+import { CodeBlock } from 'react-code-block';
+import { themes } from 'prism-react-renderer';
+
+function CodeBlockDemo({ code, language }) {
+  return (
+    <CodeBlock code={code} language={language} theme={themes.github}>
+      <CodeBlock.Code className="bg-white p-6 rounded-lg shadow">
+        <div className="table-row">
+          <CodeBlock.LineNumber className="table-cell pr-4 text-xs text-gray-400 text-right select-none" />
+          <CodeBlock.LineContent className="table-cell">
+            <CodeBlock.Token />
+          </CodeBlock.LineContent>
+        </div>
+      </CodeBlock.Code>
+    </CodeBlock>
+  );
+}
+```
+
+import { themes } from 'prism-react-renderer';
+
+<Preview>
+  <CodeBlock code={js} language="js" theme={themes.github}>
+    <CodeBlock.Code className="bg-white !p-6 rounded-lg shadow">
+      <div className="table-row">
+        <CodeBlock.LineNumber className="table-cell pr-4 text-xs text-gray-400 text-right select-none" />
+        <CodeBlock.LineContent className="table-cell">
+          <CodeBlock.Token />
+        </CodeBlock.LineContent>
+      </div>
+    </CodeBlock.Code>
+  </CodeBlock>
+</Preview>
+
+## Support for more languages
+
+Please follow the guide by `prism-react-renderer` for this – [github.com/FormidableLabs/prism-react-renderer#custom-language-support](https://github.com/FormidableLabs/prism-react-renderer#custom-language-support)
