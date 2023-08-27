@@ -1,0 +1,68 @@
+# API reference
+
+### CodeBlock
+
+Top-level root component which contains all the sub-components to construct a code block.
+
+| Prop       | Type                   | Default         | Description                              |
+| :--------- | :--------------------- | :-------------- | :--------------------------------------- |
+| `code`     | `string`               | –               | Code to be rendered.                     |
+| `language` | `string`               | –               | Language to use for syntax highlighting. |
+| `lines`    | `(number \| string)[]` | `[]`            | Lines / Line ranges to highlight.        |
+| `words`    | `string[]`             | `[]`            | Words to highlight.                      |
+| `theme`    | `PrismTheme`           | `themes.vsDark` | Theme to use for syntax highlighting.    |
+
+All other [`prism-react-render` props](https://github.com/FormidableLabs/prism-react-renderer#basic-props) can also be passed to this component.
+
+---
+
+### CodeBlock.Code
+
+Container which contains code to render each line of the code.
+
+| Prop       | Type                      | Default | Description                                   |
+| :--------- | :------------------------ | :------ | :-------------------------------------------- |
+| `as`       | `String \| Component`     | `pre`   | The element or component it should render as. |
+| `children` | `ReactNode \| RenderProp` | –       | How each line of the code should be rendered. |
+
+| Render Prop         | Type      | Description                                                                                 |
+| :------------------ | :-------- | :------------------------------------------------------------------------------------------ |
+| `isLineHighlighted` | `boolean` | Whether the current line is highlighted or not based on what is passed to the `lines` prop. |
+| `lineNumber`        | `number`  | Line number of the current line.                                                            |
+
+---
+
+### CodeBlock.LineContent
+
+Container for a single line of the code.
+
+| Prop       | Type                  | Default | Description                                   |
+| :--------- | :-------------------- | :------ | :-------------------------------------------- |
+| `as`       | `String \| Component` | `code`  | The element or component it should render as. |
+| `children` | `ReactNode`           | –       | What should the current line contain.         |
+
+---
+
+### CodeBlock.Token
+
+Renders a syntax-highlighted token from the current line.
+
+| Prop       | Type                      | Default | Description                                   |
+| :--------- | :------------------------ | :------ | :-------------------------------------------- |
+| `as`       | `String \| Component`     | `span`  | The element or component it should render as. |
+| `children` | `ReactNode \| RenderProp` | –       | How a token should be rendered.               |
+
+| Render Prop          | Type      | Description                                                                                  |
+| :------------------- | :-------- | :------------------------------------------------------------------------------------------- |
+| `isTokenHighlighted` | `boolean` | Whether the current token is highlighted or not based on what is passed to the `words` prop. |
+| `children`           | `string`  | Content of the current token.                                                                |
+
+---
+
+### CodeBlock.LineNumber
+
+Renders the line number for the current line.
+
+| Prop | Type                  | Default | Description                                   |
+| :--- | :-------------------- | :------ | :-------------------------------------------- |
+| `as` | `String \| Component` | `span`  | The element or component it should render as. |
