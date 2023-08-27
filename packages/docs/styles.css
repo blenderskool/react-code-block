@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-dots {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.1) 10%, transparent 10%);
+  background-size: 8px 8px;
+}
+
+.code-block:has(+ .preview) {
+  @apply border-4 -mb-8 z-10 relative;
+}
+
+.code-block + .preview {
+  @apply rounded-t-none pt-28;
+}
+
+table {
+  @apply w-full !table;
+}
