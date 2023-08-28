@@ -17,7 +17,7 @@
     "prism-react-renderer": "^2.0.6",
     "react": "^18.2.0",
     "react-children-utilities": "^2.9.0",
-    "react-code-block": "1.0.0",
+    "react-code-block": "0.1.0",
     "react-dom": "^18.2.0",
     "react-use": "^17.4.0",
     "rehype-mdx-code-props": "^1.0.0",
