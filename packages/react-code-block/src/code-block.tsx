@@ -1,5 +1,5 @@
 import { Highlight, HighlightProps } from 'prism-react-renderer';
-import React, { forwardRef, useMemo, useRef } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import {
   LineContext,
   RootContext,
