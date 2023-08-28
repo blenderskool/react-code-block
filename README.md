@@ -20,6 +20,8 @@
   <br />
 </div>
 
+![React Code Block banner](https://react-code-block.netlify.app/banner.jpg)
+
 ### Features
 
 - ✅ **Unstyled**
@@ -39,7 +41,7 @@ npm i react-code-block prism-react-renderer
 
 ### Documentation
 
-You can find the complete documentation at **https://react-code-block.netlify.app/**
+You can find the complete documentation at [**react-code-block.netlify.app**](https://react-code-block.netlify.app)
 
 ### Why?
 
