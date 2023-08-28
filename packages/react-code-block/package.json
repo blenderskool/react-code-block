@@ -1,6 +1,6 @@
 {
   "name": "react-code-block",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Set of unstyled UI components to build powerful code blocks in React.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,6 +9,15 @@
   "type": "module",
   "files": [
     "dist/"
+  ],
+  "keywords": [
+    "code-blocks",
+    "snippets",
+    "syntax-highlighting",
+    "unstyled",
+    "prism",
+    "react",
+    "mdx"
   ],
   "homepage": "https://react-code-block.netlify.app",
   "repository": {
