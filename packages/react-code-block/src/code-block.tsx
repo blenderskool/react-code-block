@@ -1,5 +1,5 @@
 import { Highlight, HighlightProps } from 'prism-react-renderer';
-import React, { useMemo } from 'react';
+import React, { forwardRef, useMemo, useRef } from 'react';
 import {
   LineContext,
   RootContext,
@@ -19,7 +19,7 @@ export interface CodeBlockProps extends Omit<HighlightProps, 'children'> {
   children: React.ReactNode;
 }
 
-export const CodeBlock = ({
+const CodeBlock = ({
   code,
   words = [],
   lines = [],
@@ -49,11 +49,10 @@ export type CodeProps<T extends React.ElementType> = WithAsProp<
   }
 >;
 
-const Code = <T extends React.ElementType = 'pre'>({
-  as,
-  children,
-  ...props
-}: CodeProps<T>) => {
+const Code = <T extends React.ElementType = 'pre'>(
+  { as, children, ...props }: CodeProps<T>,
+  ref: React.ForwardedRef<T>
+) => {
   const { lines, words, ...highlightProps } = useRootContext();
 
   const Tag = as ?? 'pre';
@@ -61,7 +60,7 @@ const Code = <T extends React.ElementType = 'pre'>({
   return (
     <Highlight {...highlightProps}>
       {(highlight) => (
-        <Tag {...props}>
+        <Tag {...props} ref={ref}>
           {highlight.tokens.map((line, i) => {
             const lineNumber = i + 1;
             const isLineHighlighted = shouldHighlightLine(lineNumber, lines);
@@ -85,18 +84,16 @@ const Code = <T extends React.ElementType = 'pre'>({
 
 export type LineContentProps<T extends React.ElementType> = WithAsProp<T, {}>;
 
-const LineContent = <T extends React.ElementType = 'div'>({
-  as,
-  children,
-  className,
-  ...rest
-}: LineContentProps<T>) => {
+const LineContent = <T extends React.ElementType = 'div'>(
+  { as, children, className, ...rest }: LineContentProps<T>,
+  ref: React.ForwardedRef<T>
+) => {
   const { highlight, line } = useLineContext();
   const { getLineProps } = highlight!;
 
   const Tag = as ?? 'div';
   return (
-    <Tag {...getLineProps({ line, className })} {...rest}>
+    <Tag {...getLineProps({ line, className })} {...rest} ref={ref}>
       {children}
     </Tag>
   );
@@ -112,12 +109,15 @@ export type TokenProps<T extends React.ElementType> = WithAsProp<
   }
 >;
 
-const Token = <T extends React.ElementType = 'span'>({
-  as,
-  children = ({ children }) => <span>{children}</span>,
-  className,
-  ...rest
-}: TokenProps<T>) => {
+const Token = <T extends React.ElementType = 'span'>(
+  {
+    as,
+    children = ({ children }) => <span>{children}</span>,
+    className,
+    ...rest
+  }: TokenProps<T>,
+  ref: React.ForwardedRef<T>
+) => {
   const { words } = useRootContext();
   const { line, highlight, lineNumber } = useLineContext();
   const { getTokenProps } = highlight!;
@@ -142,7 +142,7 @@ const Token = <T extends React.ElementType = 'span'>({
         return (
           <React.Fragment key={key}>
             {content.map((content, i) => (
-              <Tag key={i} {...props} {...rest}>
+              <Tag key={i} {...props} {...rest} ref={ref}>
                 {children({
                   children: content,
                   isTokenHighlighted: shouldHighlightToken(
@@ -162,16 +162,38 @@ const Token = <T extends React.ElementType = 'span'>({
 
 export type LineNumberProps<T extends React.ElementType> = WithAsProp<T, {}>;
 
-const LineNumber = <T extends React.ElementType = 'span'>({
-  as,
-  ...props
-}: LineNumberProps<T>) => {
+const LineNumber = <T extends React.ElementType = 'span'>(
+  { as, ...props }: LineNumberProps<T>,
+  ref: React.ForwardedRef<T>
+) => {
   const { lineNumber } = useLineContext();
   const Tag = as ?? 'span';
-  return <Tag {...props}>{lineNumber}</Tag>;
+  return (
+    <Tag {...props} ref={ref}>
+      {lineNumber}
+    </Tag>
+  );
 };
 
-CodeBlock.Code = Code;
-CodeBlock.LineContent = LineContent;
-CodeBlock.Token = Token;
-CodeBlock.LineNumber = LineNumber;
+type CodeComponent = <U, T extends React.ElementType = 'pre'>(
+  props: CodeProps<T> & { ref?: U }
+) => JSX.Element;
+
+type LineContentComponent = <U, T extends React.ElementType = 'div'>(
+  props: LineContentProps<T> & { ref?: U }
+) => JSX.Element;
+
+type TokenComponent = <U, T extends React.ElementType = 'span'>(
+  props: TokenProps<T> & { ref?: U }
+) => JSX.Element;
+
+type LineNumberComponent = <U, T extends React.ElementType = 'span'>(
+  props: LineNumberProps<T> & { ref?: U }
+) => JSX.Element;
+
+CodeBlock.Code = forwardRef(Code) as CodeComponent;
+CodeBlock.LineContent = forwardRef(LineContent) as LineContentComponent;
+CodeBlock.Token = forwardRef(Token) as TokenComponent;
+CodeBlock.LineNumber = forwardRef(LineNumber) as LineNumberComponent;
+
+export { CodeBlock };
