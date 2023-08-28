@@ -19,6 +19,11 @@ export interface CodeBlockProps extends Omit<HighlightProps, 'children'> {
   children: React.ReactNode;
 }
 
+/**
+ * Top-level root component which contains all the sub-components to construct a code block.
+ *
+ * API Reference: {@link https://react-code-block.netlify.app/api-reference#codeblock}
+ */
 const CodeBlock = ({
   code,
   words = [],
@@ -191,9 +196,32 @@ type LineNumberComponent = <U, T extends React.ElementType = 'span'>(
   props: LineNumberProps<T> & { ref?: U }
 ) => JSX.Element;
 
+/**
+ * Container which contains code to render each line of the code.
+ *
+ * API Reference: {@link https://react-code-block.netlify.app/api-reference#codeblockcode}
+ */
 CodeBlock.Code = forwardRef(Code) as CodeComponent;
+
+/**
+ * Container for a single line of the code.
+ *
+ * API Reference: {@link https://react-code-block.netlify.app/api-reference#codeblocklinecontent}
+ */
 CodeBlock.LineContent = forwardRef(LineContent) as LineContentComponent;
+
+/**
+ * Renders a syntax-highlighted token from the current line.
+ *
+ * API Reference: {@link https://react-code-block.netlify.app/api-reference#codeblocktoken}
+ */
 CodeBlock.Token = forwardRef(Token) as TokenComponent;
+
+/**
+ * Renders the line number for the current line.
+ *
+ * API Reference: {@link https://react-code-block.netlify.app/api-reference#codeblocklinenumber}
+ */
 CodeBlock.LineNumber = forwardRef(LineNumber) as LineNumberComponent;
 
 export { CodeBlock };
