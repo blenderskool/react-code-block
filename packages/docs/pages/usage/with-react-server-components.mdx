@@ -1,0 +1,51 @@
+# With React Server Components
+
+Integrating React Code Block in a React Server Component environment is easy. If you are using Next.js 13+ and the [App Router](https://nextjs.org/docs/app),
+you can mark your CodeBlock component as a **Client Component** using `'use client'` directive and things should work as expected.
+
+### Why mark it as a Client Component?
+
+Components exposed by React Code Block use React Context for sharing data, and it can only be used in Client Components. But you can still compose these Client Components
+in Server Components and enjoy its benefits of server rendering / not requiring client-side JavaScript(unless there are interactive elements in your code blocks).
+
+### Example
+
+Create your own CodeBlock component and mark it as **Client Component**.
+
+```jsx filename="MyCodeBlock.js" lines={[1]}
+'use client';
+import { CodeBlock } from 'react-code-block';
+
+function MyCodeBlock({ code, language }) {
+  return (
+    <CodeBlock code={code} language={language}>
+      <CodeBlock.Code className="bg-gray-900 p-6 rounded-xl shadow-lg">
+        <div className="table-row">
+          <CodeBlock.LineNumber className="table-cell pr-4 text-sm text-gray-500 text-right select-none" />
+          <CodeBlock.LineContent className="table-cell">
+            <CodeBlock.Token />
+          </CodeBlock.LineContent>
+        </div>
+      </CodeBlock.Code>
+    </CodeBlock>
+  );
+}
+
+export default MyCodeBlock;
+```
+
+Use your `<MyCodeBlock />` component normally in other Server / Client components.
+
+```jsx lines={[6]}
+import MyCodeBlock from './MyCodeBlock';
+
+export default function Home() {
+  return (
+    <div className="container mx-auto">
+      <MyCodeBlock code="console.log('Hello World!')" language="js" />
+    </div>
+  );
+}
+```
+
+You can customize the CodeBlock component however you like with features such as line numbers, line highlighting, etc. as documented [here](/usage#showing-line-numbers).
