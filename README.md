@@ -37,7 +37,7 @@
 npm i react-code-block prism-react-renderer
 ```
 
-[**Continue with basic example here →**](<[./usage#basic-example](https://react-code-block.netlify.app/usage#basic-example)>)
+[**Continue with basic example here →**](https://react-code-block.netlify.app/usage#basic-example)
 
 ### Documentation
 
