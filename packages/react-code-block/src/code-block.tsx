@@ -1,17 +1,17 @@
 import { Highlight, HighlightProps } from 'prism-react-renderer';
-import React, { forwardRef, useMemo } from 'react';
+import React, { forwardRef, Ref, useMemo } from 'react';
 import {
   LineContext,
   RootContext,
   useLineContext,
   useRootContext,
-} from './contexts';
-import { WithAsProp } from './types';
+} from './contexts.js';
+import { WithAsProp } from './types.js';
 import {
   parseWordHighlights,
   shouldHighlightLine,
   shouldHighlightToken,
-} from './utils';
+} from './utils.js';
 
 export interface CodeBlockProps extends Omit<HighlightProps, 'children'> {
   lines?: (number | string)[];
@@ -56,7 +56,7 @@ export type CodeProps<T extends React.ElementType> = WithAsProp<
 
 const Code = <T extends React.ElementType = 'pre'>(
   { as, children, ...props }: CodeProps<T>,
-  ref: React.ForwardedRef<T>
+  ref: Ref<HTMLElement>
 ) => {
   const { lines, words, ...highlightProps } = useRootContext();
 
@@ -65,7 +65,7 @@ const Code = <T extends React.ElementType = 'pre'>(
   return (
     <Highlight {...highlightProps}>
       {(highlight) => (
-        <Tag {...props} ref={ref}>
+        <Tag {...props} ref={ref as any}>
           {highlight.tokens.map((line, i) => {
             const lineNumber = i + 1;
             const isLineHighlighted = shouldHighlightLine(lineNumber, lines);
@@ -91,14 +91,14 @@ export type LineContentProps<T extends React.ElementType> = WithAsProp<T, {}>;
 
 const LineContent = <T extends React.ElementType = 'div'>(
   { as, children, className, ...rest }: LineContentProps<T>,
-  ref: React.ForwardedRef<T>
+  ref: Ref<HTMLElement>
 ) => {
   const { highlight, line } = useLineContext();
   const { getLineProps } = highlight!;
 
   const Tag = as ?? 'div';
   return (
-    <Tag {...getLineProps({ line, className })} {...rest} ref={ref}>
+    <Tag {...getLineProps({ line, className })} {...rest} ref={ref as any}>
       {children}
     </Tag>
   );
@@ -121,7 +121,7 @@ const Token = <T extends React.ElementType = 'span'>(
     className,
     ...rest
   }: TokenProps<T>,
-  ref: React.ForwardedRef<T>
+  ref: Ref<HTMLElement>
 ) => {
   const { words } = useRootContext();
   const { line, highlight, lineNumber } = useLineContext();
@@ -169,7 +169,7 @@ export type LineNumberProps<T extends React.ElementType> = WithAsProp<T, {}>;
 
 const LineNumber = <T extends React.ElementType = 'span'>(
   { as, ...props }: LineNumberProps<T>,
-  ref: React.ForwardedRef<T>
+  ref: Ref<HTMLElement>
 ) => {
   const { lineNumber } = useLineContext();
   const Tag = as ?? 'span';

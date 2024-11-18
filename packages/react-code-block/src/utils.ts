@@ -1,4 +1,4 @@
-import { RootContextProps } from './types';
+import { RootContextProps } from './types.js';
 
 export const shouldHighlightLine = (
   line: number,

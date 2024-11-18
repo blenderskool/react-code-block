@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { LineContextProps, RootContextProps } from './types';
+import type { LineContextProps, RootContextProps } from './types.js';
 
 export const RootContext = createContext<RootContextProps | undefined>(
   undefined
