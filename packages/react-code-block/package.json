@@ -1,6 +1,6 @@
 {
   "name": "react-code-block",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Set of unstyled UI components to build powerful code blocks in React.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
