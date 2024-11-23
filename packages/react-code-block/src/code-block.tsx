@@ -1,17 +1,24 @@
-import { Highlight, HighlightProps } from 'prism-react-renderer';
-import React, { forwardRef, Ref, useMemo } from 'react';
+import { Highlight, type HighlightProps } from 'prism-react-renderer';
+import React, { type Ref, useMemo } from 'react';
 import {
   LineContext,
   RootContext,
   useLineContext,
   useRootContext,
 } from './contexts.js';
-import { WithAsProp } from './types.js';
+import type {
+  CodeProps,
+  LineContentProps,
+  LineNumberProps,
+} from './shared/prop-types.js';
+import type { WithAsProp, WithDisplayName } from './shared/types.js';
 import {
+  forwardRef,
   parseWordHighlights,
   shouldHighlightLine,
   shouldHighlightToken,
-} from './utils.js';
+  splitStringByWords,
+} from './shared/utils.js';
 
 export interface CodeBlockProps extends Omit<HighlightProps, 'children'> {
   lines?: (number | string)[];
@@ -41,18 +48,6 @@ const CodeBlock = ({
     </RootContext.Provider>
   );
 };
-
-export type CodeProps<T extends React.ElementType> = WithAsProp<
-  T,
-  {
-    children:
-      | React.ReactNode
-      | ((
-          data: { isLineHighlighted: boolean; lineNumber: number },
-          idx: number
-        ) => React.ReactNode);
-  }
->;
 
 const Code = <T extends React.ElementType = 'pre'>(
   { as, children, ...props }: CodeProps<T>,
@@ -86,8 +81,6 @@ const Code = <T extends React.ElementType = 'pre'>(
     </Highlight>
   );
 };
-
-export type LineContentProps<T extends React.ElementType> = WithAsProp<T, {}>;
 
 const LineContent = <T extends React.ElementType = 'div'>(
   { as, children, className, ...rest }: LineContentProps<T>,
@@ -131,18 +124,13 @@ const Token = <T extends React.ElementType = 'span'>(
   return (
     <React.Fragment>
       {line.map((token, key) => {
-        let { children: contentWithSpaces, ...props } = getTokenProps({
+        const { children: contentWithSpaces, ...props } = getTokenProps({
           token,
           className,
         });
-
-        let content = [contentWithSpaces];
-
-        if (words.length) {
-          content = contentWithSpaces
-            .split(new RegExp(`(${words.map(([word]) => word).join('|')})`))
-            .filter(Boolean);
-        }
+        const content = words.length
+          ? splitStringByWords(contentWithSpaces, words)
+          : [contentWithSpaces];
 
         return (
           <React.Fragment key={key}>
@@ -165,8 +153,6 @@ const Token = <T extends React.ElementType = 'span'>(
   );
 };
 
-export type LineNumberProps<T extends React.ElementType> = WithAsProp<T, {}>;
-
 const LineNumber = <T extends React.ElementType = 'span'>(
   { as, ...props }: LineNumberProps<T>,
   ref: Ref<HTMLElement>
@@ -180,21 +166,29 @@ const LineNumber = <T extends React.ElementType = 'span'>(
   );
 };
 
-type CodeComponent = <U, T extends React.ElementType = 'pre'>(
-  props: CodeProps<T> & { ref?: U }
-) => JSX.Element;
+interface CodeComponent extends WithDisplayName {
+  <U, T extends React.ElementType = 'pre'>(
+    props: CodeProps<T> & { ref?: U }
+  ): JSX.Element;
+}
 
-type LineContentComponent = <U, T extends React.ElementType = 'div'>(
-  props: LineContentProps<T> & { ref?: U }
-) => JSX.Element;
+interface LineContentComponent extends WithDisplayName {
+  <U, T extends React.ElementType = 'div'>(
+    props: LineContentProps<T> & { ref?: U }
+  ): JSX.Element;
+}
 
-type TokenComponent = <U, T extends React.ElementType = 'span'>(
-  props: TokenProps<T> & { ref?: U }
-) => JSX.Element;
+interface TokenComponent extends WithDisplayName {
+  <U, T extends React.ElementType = 'span'>(
+    props: TokenProps<T> & { ref?: U }
+  ): JSX.Element;
+}
 
-type LineNumberComponent = <U, T extends React.ElementType = 'span'>(
-  props: LineNumberProps<T> & { ref?: U }
-) => JSX.Element;
+interface LineNumberComponent extends WithDisplayName {
+  <U, T extends React.ElementType = 'span'>(
+    props: LineNumberProps<T> & { ref?: U }
+  ): JSX.Element;
+}
 
 /**
  * Container which contains code to render each line of the code.
