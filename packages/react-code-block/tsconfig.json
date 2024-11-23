@@ -17,6 +17,7 @@
     "noUnusedParameters": true,
     "downlevelIteration": true,
     "isolatedModules": true,
+    "verbatimModuleSyntax": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
