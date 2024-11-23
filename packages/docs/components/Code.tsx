@@ -10,6 +10,7 @@ export default function Code({
   hideLineNumbers = false,
   words = [],
   lines = [],
+  className = '',
 }) {
   const [, copyToClipboard] = useCopyToClipboard();
   const [isCopied, setIsCopied] = useState(false);
@@ -38,7 +39,7 @@ export default function Code({
       words={words}
       theme={theme}
     >
-      <div className="bg-gray-50 border border-gray-200 mt-6 rounded-xl code-block relative">
+      <div className={`bg-gray-50 border border-gray-200 mt-6 rounded-xl code-block relative ${className}`}>
         {filename && (
           <div className="rounded-t-xl bg-gray-200/40 px-4 py-2 text-xs">
             {filename}

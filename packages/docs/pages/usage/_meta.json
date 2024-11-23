@@ -1,4 +1,5 @@
 {
   "with-mdx": "With MDX",
-  "with-react-server-components": "With Server Components"
+  "with-react-server-components": "With Server Components",
+  "shiki-support": "Shiki Support"
 }

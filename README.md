@@ -30,6 +30,7 @@
 - ✅ **Line highlighting**
 - ✅ **Word highlighting**
 - ✅ **Theming**
+- ✅ **Shiki support**
 
 ### Getting started
 
@@ -55,8 +56,11 @@ library to build any kind of code block you need.
 
 ### How does it work?
 
-React Code Block uses [prism-react-renderer](https://github.com/FormidableLabs/prism-react-renderer) under the hood for syntax highlighting. On top of this, it adds
+React Code Block uses an existing syntax highlighting library under the hood for syntax highlighting. On top of this, it adds
 additional features like line numbers, line highlighting, etc. which can be styled through the primitive components this package exposes.
+Currently supported syntax highlighted libraries:
+- [prism-react-renderer](https://github.com/FormidableLabs/prism-react-renderer)
+- [shiki](https://shiki.matsu.io/)
 
 ### License
 

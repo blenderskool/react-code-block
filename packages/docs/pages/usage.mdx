@@ -1,3 +1,4 @@
+import { Callout } from 'nextra/components';
 import { CodeBlock } from 'react-code-block';
 import { js } from '../examples/placeholder-code';
 
@@ -5,11 +6,15 @@ import { js } from '../examples/placeholder-code';
 
 ## Installation
 
-Start by installing `react-code-block` and its peer-dependency `prism-react-renderer` via npm:
+Start by installing `react-code-block` and its peer-dependency `prism-react-renderer`.
 
 ```bash hideLineNumbers
 npm i react-code-block prism-react-renderer
 ```
+
+<Callout type="info">
+If you prefer using Shiki as the syntax highlighter instead, follow [this guide](/usage/shiki-support) to get started and come back here for all the customization options.
+</Callout>
 
 ## Basic example
 
@@ -264,7 +269,7 @@ import RenderAdditionalElements from '../examples/RenderAdditionalElements';
 
 ## Theming
 
-React Code Block uses `prism-react-renderer` under the hood for syntax highlighting. Default theme is `vsDark` and it can be changes using the `theme` prop in the
+React Code Block uses `prism-react-renderer` under the hood for syntax highlighting. Default theme is `vsDark` and it can be changed using the `theme` prop in the
 `CodeBlock` component. Follow [this guide](https://github.com/FormidableLabs/prism-react-renderer#theming) by `prism-react-renderer` for custom themes.
 
 ```jsx lines={[2,6]}

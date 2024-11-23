@@ -1,0 +1,172 @@
+# Shiki Support
+
+React Code Block also supports rendering code highlighted using [Shiki](https://shiki.matsu.io/) library. Shiki uses the same highlighting engine that is used by VS Code, resulting in
+a very high-quality syntax highlighting and support for any VS Code theme.
+
+import { Steps, Tabs, Callout } from 'nextra/components';
+
+<Steps>
+
+### Installation
+
+Start by installing `shiki` as a dependency or a dev-dependency(depending on how you are using it) alongside `react-code-block`:
+
+```bash hideLineNumbers
+npm i react-code-block
+npm i -D shiki
+```
+
+### Generate syntax-highlighted code
+
+Use Shiki to generate syntax-highlighted tokens from your code using the `codeToTokens` function.
+
+```js
+import { codeToTokens } from 'shiki';
+
+// Runs preferably in a server-like environment
+const tokens = await codeToTokens(code, {
+  language: 'js',
+  theme: 'github-dark'
+});
+```
+#### Where should the above code go?
+Because of the nature of Shiki library, typically it is used on the server-side(or build time) for generating syntax-highlighted code, and then a client-side code block component in React
+consumes this data to actually render the HTML on the webpage. Depending on your framework, there should be a way to run code in such environments.
+
+<Tabs items={['Next.js', 'Astro']}>
+  <Tabs.Tab>
+    Use [React Server Components](https://shiki.matsu.io/packages/next#react-server-component) if you are using App Router, or `getServerSideProps` / `getStaticProps` functions in Pages Router.
+
+    ```tsx filename="CodeBlockDemo.js"
+    import { codeToTokens } from 'shiki';
+
+    async function CodeBlockDemo({ code }) {
+      const tokens = await codeToTokens(code, {
+        language: 'js',
+        theme: 'github-dark'
+      });
+
+      // Code from next section goes here.
+    }
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    Use [`.astro` components](https://docs.astro.build/en/basics/astro-components/) as they run only during build-time or server-side-rendering.
+
+    ```astro filename="CodeBlockDemo.astro"
+    ---
+    import { codeToTokens } from 'shiki';
+
+    const { code } = Astro.props;
+
+    const tokens = await codeToTokens(code, {
+      language: 'js',
+      theme: 'github-dark'
+    });
+    ---
+
+    // Code from next section goes here.
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+
+#### How do I run it completely client-side?
+There are ways to run Shiki completely on the client-side like it's [mentioned in their docs](https://shiki.matsu.io/packages/next#react-client-component). An example is shown below.
+Be mindful of the bundle size and amount of JavaScript you are loading on client-side just for syntax highlighting.
+
+```tsx
+import { codeToTokens, TokensResult } from 'shiki/bundle/web';
+import { useEffect } from 'react';
+
+function CodeBlockDemo({ code }) {
+  const [tokens, setTokens] = useState<TokensResult>(null);
+
+  useEffect(() => {
+    codeToTokens(code, {
+      language: 'js',
+      theme: 'github-dark',
+    })
+      .then(setTokens);
+  }, [code]);
+
+  if (!tokens) {
+    return (
+      <p>Loading...</p>
+    )
+  }
+
+  // Code from next section goes here.
+}
+```
+<Callout>
+  The above process is async and would show a "Loading..." text to the user while syntax highlight is in process.
+  To eliminate this, either [move the syntax highlighting code to a server-like environment](#where-should-the-above-code-go) or consider [using the Prism highlighter](/usage).
+</Callout>
+
+### Render the syntax-highlighted code
+Once you have the syntax-highlighted tokens from your code, you can now use React Code Block package to render the code. First, create a new file with a **Client Component** as shown.
+
+```tsx filename="CodeBlockRenderer.js"
+'use client';
+import { CodeBlock } from 'react-code-block';
+
+function CodeBlockRenderer({ tokens }) {
+  return (
+    <CodeBlock tokens={tokens}>
+      <CodeBlock.Code className="bg-gray-900 p-6 rounded-xl shadow-lg">
+        <div className="table-row">
+          <CodeBlock.LineNumber className="table-cell pr-4 text-sm text-gray-500 text-right select-none" />
+          <CodeBlock.LineContent className="table-cell">
+            <CodeBlock.Token />
+          </CodeBlock.LineContent>
+        </div>
+      </CodeBlock.Code>
+    </CodeBlock>
+  );
+}
+
+export default CodeBlockRenderer;
+```
+
+Now use the above component to render the syntax-highlighted tokens from the previous section.
+
+
+<Tabs items={['Next.js', 'Astro']}>
+  <Tabs.Tab>
+    ```tsx filename="CodeBlockDemo.js" className="!mt-0"
+    import { codeToTokens } from 'shiki';
+    import CodeBlockRenderer from './CodeBlockRenderer';
+
+    async function CodeBlockDemo({ code }) {
+      const tokens = await codeToTokens(code, {
+        language: 'js',
+        theme: 'github-dark'
+      });
+
+      return <CodeBlockRenderer tokens={tokens} />
+    }
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```astro filename="CodeBlockDemo.astro" className="!mt-0"
+    ---
+    import { codeToTokens } from 'shiki';
+    import CodeBlockRenderer from './CodeBlockRenderer';
+
+    const { code } = Astro.props;
+
+    const tokens = await codeToTokens(code, {
+      language: 'js',
+      theme: 'github-dark'
+    });
+    ---
+
+    <CodeBlockRenderer tokens={tokens} />
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+You can now customize the CodeBlock component however you like with features such as line numbers, line highlighting, etc. as documented [here](/usage#showing-line-numbers).
+
+</Steps>
