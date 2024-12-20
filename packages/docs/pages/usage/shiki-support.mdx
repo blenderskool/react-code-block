@@ -105,11 +105,11 @@ function CodeBlockDemo({ code }) {
 </Callout>
 
 ### Render the syntax-highlighted code
-Once you have the syntax-highlighted tokens from your code, you can now use React Code Block package to render the code. First, create a new file with a **Client Component** as shown.
+Once you have the syntax-highlighted tokens from your code, you can now use React Code Block package to render the code. First, create a new file with a **Client Component** as shown. Notice how the import is from `react-code-block/shiki` here.
 
 ```tsx filename="CodeBlockRenderer.js"
 'use client';
-import { CodeBlock } from 'react-code-block';
+import { CodeBlock } from 'react-code-block/shiki';
 
 function CodeBlockRenderer({ tokens }) {
   return (
