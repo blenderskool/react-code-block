@@ -6,13 +6,11 @@
     Set of unstyled UI components to build powerful code blocks in React.
   </p>
   <p>
-    <a href="https://www.npmjs.com/package/react-code-block">
-    <img src="https://badgen.net/npm/v/react-code-block" />
-  </a>
-  <img src="https://badgen.net/bundlephobia/minzip/react-code-block?label=gzipped%20size" />
-  <img src="https://badgen.net/npm/types/react-code-block" />
-  <img src="https://badgen.net/bundlephobia/tree-shaking/react-code-block" />
-  <img src="https://badgen.net/npm/license/react-code-block" />
+    <a href="https://www.npmjs.com/package/react-code-block"><img src="https://badgen.net/npm/v/react-code-block" /></a>
+    <img src="https://badgen.net/bundlephobia/minzip/react-code-block?label=gzipped%20size" />
+    <img src="https://badgen.net/npm/types/react-code-block" />
+    <img src="https://badgen.net/bundlephobia/tree-shaking/react-code-block" />
+    <img src="https://badgen.net/npm/license/react-code-block" />
   </p>
   <br />
   <br />
